@@ -29,24 +29,55 @@ import { useState } from "react";
 import { useAuth, UserRole } from "@/contexts/AuthContext";
 
 const navigationItems = [
-  { name: 'Dashboard', href: '/', icon: Home, roles: ['admin', 'teacher', 'student', 'parent', 'staff'] as UserRole[] },
+  // Dashboard - accessible by all roles
+  { name: 'Dashboard', href: '/', icon: Home, roles: ['admin', 'teacher', 'student', 'parent', 'staff', 'accountant', 'librarian', 'transport_manager'] as UserRole[] },
+  
+  // Student Management - Admin and Teachers (for their assigned classes)
   { name: 'Student Management', href: '/students', icon: Users, roles: ['admin', 'teacher'] as UserRole[] },
+  
+  // Staff Management & HR - Admin only
   { name: 'Staff Management', href: '/staff', icon: UserCheck, roles: ['admin'] as UserRole[] },
+  { name: 'HR & Payroll', href: '/hr-payroll', icon: UserCheck, roles: ['admin', 'accountant'] as UserRole[] },
+  
+  // Attendance - Admin, Teachers, Students
   { name: 'Attendance', href: '/attendance', icon: Calendar, roles: ['admin', 'teacher', 'student'] as UserRole[] },
+  
+  // Academic & Classes - Admin, Teachers, Students
   { name: 'Academic', href: '/academic', icon: BookOpen, roles: ['admin', 'teacher', 'student'] as UserRole[] },
   { name: 'Classes', href: '/classes', icon: School, roles: ['admin', 'teacher', 'student'] as UserRole[] },
-  { name: 'Exams', href: '/exams', icon: FileText, roles: ['admin', 'teacher', 'student'] as UserRole[] },
-  { name: 'Fee Management', href: '/fees', icon: CreditCard, roles: ['admin', 'staff', 'parent'] as UserRole[] },
-  { name: 'Communication', href: '/communication', icon: MessageSquare, roles: ['admin', 'teacher', 'student', 'parent'] as UserRole[] },
-  { name: 'Notices', href: '/notices', icon: Bell, roles: ['admin', 'teacher', 'student', 'parent'] as UserRole[] },
-  { name: 'Library', href: '/library', icon: Library, roles: ['admin', 'teacher', 'student'] as UserRole[] },
-  { name: 'Transport', href: '/transport', icon: Bus, roles: ['admin', 'staff', 'student', 'parent'] as UserRole[] },
-  { name: 'Hostel', href: '/hostel', icon: Building, roles: ['admin', 'staff', 'student', 'parent'] as UserRole[] },
   { name: 'E-Learning', href: '/elearning', icon: Monitor, roles: ['admin', 'teacher', 'student'] as UserRole[] },
+  
+  // Exams - Admin, Teachers, Students, Parents
+  { name: 'Exams', href: '/exams', icon: FileText, roles: ['admin', 'teacher', 'student', 'parent'] as UserRole[] },
+  
+  // Fees - Admin, Accountant, Parents
+  { name: 'Fee Management', href: '/fees', icon: CreditCard, roles: ['admin', 'accountant', 'parent'] as UserRole[] },
+  
+  // Communication - All roles except transport_manager
+  { name: 'Communication', href: '/communication', icon: MessageSquare, roles: ['admin', 'teacher', 'student', 'parent', 'staff', 'accountant', 'librarian'] as UserRole[] },
+  
+  // Notices - All roles
+  { name: 'Notices', href: '/notices', icon: Bell, roles: ['admin', 'teacher', 'student', 'parent', 'staff', 'accountant', 'librarian', 'transport_manager'] as UserRole[] },
+  
+  // Library - Admin, Teachers, Students, Librarian
+  { name: 'Library', href: '/library', icon: Library, roles: ['admin', 'teacher', 'student', 'librarian'] as UserRole[] },
+  
+  // Transport - Admin, Transport Manager, Students, Parents
+  { name: 'Transport', href: '/transport', icon: Bus, roles: ['admin', 'transport_manager', 'student', 'parent'] as UserRole[] },
+  
+  // Hostel - Admin, Staff, Students, Parents
+  { name: 'Hostel', href: '/hostel', icon: Building, roles: ['admin', 'staff', 'student', 'parent'] as UserRole[] },
+  
+  // Parent Portal - Parents only
   { name: 'Parent Portal', href: '/parent-portal', icon: Users, roles: ['parent'] as UserRole[] },
-  { name: 'HR & Payroll', href: '/hr-payroll', icon: UserCheck, roles: ['admin'] as UserRole[] },
+  
+  // Inventory - Admin, Staff
   { name: 'Inventory', href: '/inventory', icon: Package, roles: ['admin', 'staff'] as UserRole[] },
-  { name: 'Reports', href: '/reports', icon: BarChart3, roles: ['admin', 'teacher'] as UserRole[] },
+  
+  // Reports - Role-specific access
+  { name: 'Reports', href: '/reports', icon: BarChart3, roles: ['admin', 'teacher', 'accountant', 'librarian', 'transport_manager'] as UserRole[] },
+  
+  // Settings - Admin only
   { name: 'Settings', href: '/settings', icon: Settings, roles: ['admin'] as UserRole[] },
 ];
 
