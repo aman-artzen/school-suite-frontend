@@ -26,6 +26,8 @@ import ELearning from "./pages/ELearning";
 import Classes from "./pages/Classes";
 import Notices from "./pages/Notices";
 import NotFound from "./pages/NotFound";
+import { RoleBasedDashboard } from "./components/examples/RoleBasedDashboard";
+import { PermissionExamples } from "./components/examples/PermissionExamples";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +60,17 @@ const App = () => (
               <Route path="elearning" element={<ELearning />} />
               <Route path="classes" element={<Classes />} />
               <Route path="notices" element={<Notices />} />
+              {/* RBAC Development Examples */}
+              <Route path="rbac-examples" element={
+                <div className="p-6">
+                  <RoleBasedDashboard />
+                </div>
+              } />
+              <Route path="permission-examples" element={
+                <div className="p-6">
+                  <PermissionExamples />
+                </div>
+              } />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

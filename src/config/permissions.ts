@@ -1,0 +1,187 @@
+import { UserRole } from '@/contexts/AuthContext';
+
+// Define all available modules/features in the system
+export const MODULES = {
+  DASHBOARD: 'dashboard',
+  STUDENTS: 'students',
+  STAFF: 'staff',
+  HR_PAYROLL: 'hr_payroll',
+  ATTENDANCE: 'attendance',
+  ACADEMIC: 'academic',
+  CLASSES: 'classes',
+  ELEARNING: 'elearning',
+  EXAMS: 'exams',
+  FEES: 'fees',
+  COMMUNICATION: 'communication',
+  NOTICES: 'notices',
+  LIBRARY: 'library',
+  TRANSPORT: 'transport',
+  HOSTEL: 'hostel',
+  PARENT_PORTAL: 'parent_portal',
+  INVENTORY: 'inventory',
+  REPORTS: 'reports',
+  SETTINGS: 'settings'
+} as const;
+
+// Define specific permissions/actions within modules
+export const PERMISSIONS = {
+  VIEW: 'view',
+  CREATE: 'create',
+  EDIT: 'edit',
+  DELETE: 'delete',
+  APPROVE: 'approve',
+  ASSIGN: 'assign',
+  GRADE: 'grade',
+  MANAGE: 'manage'
+} as const;
+
+// Comprehensive Role-Based Permissions Matrix
+export const ROLE_PERMISSIONS: Record<UserRole, {
+  modules: string[];
+  permissions: Record<string, string[]>;
+  description: string;
+}> = {
+  admin: {
+    description: 'Full system access with all administrative privileges',
+    modules: Object.values(MODULES),
+    permissions: {
+      [MODULES.DASHBOARD]: [PERMISSIONS.VIEW, PERMISSIONS.MANAGE],
+      [MODULES.STUDENTS]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE, PERMISSIONS.ASSIGN],
+      [MODULES.STAFF]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE, PERMISSIONS.MANAGE],
+      [MODULES.HR_PAYROLL]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE, PERMISSIONS.APPROVE],
+      [MODULES.ATTENDANCE]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.MANAGE],
+      [MODULES.ACADEMIC]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE, PERMISSIONS.MANAGE],
+      [MODULES.CLASSES]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE, PERMISSIONS.ASSIGN],
+      [MODULES.ELEARNING]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE, PERMISSIONS.MANAGE],
+      [MODULES.EXAMS]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE, PERMISSIONS.GRADE, PERMISSIONS.APPROVE],
+      [MODULES.FEES]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE, PERMISSIONS.APPROVE],
+      [MODULES.COMMUNICATION]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE],
+      [MODULES.NOTICES]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE],
+      [MODULES.LIBRARY]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE, PERMISSIONS.MANAGE],
+      [MODULES.TRANSPORT]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE, PERMISSIONS.ASSIGN, PERMISSIONS.MANAGE],
+      [MODULES.HOSTEL]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE, PERMISSIONS.ASSIGN],
+      [MODULES.INVENTORY]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE],
+      [MODULES.REPORTS]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE],
+      [MODULES.SETTINGS]: [PERMISSIONS.VIEW, PERMISSIONS.EDIT, PERMISSIONS.MANAGE]
+    }
+  },
+  teacher: {
+    description: 'Teaching staff with access to assigned classes and academic functions',
+    modules: [MODULES.DASHBOARD, MODULES.STUDENTS, MODULES.ATTENDANCE, MODULES.ACADEMIC, MODULES.CLASSES, MODULES.ELEARNING, MODULES.EXAMS, MODULES.COMMUNICATION, MODULES.NOTICES, MODULES.REPORTS],
+    permissions: {
+      [MODULES.DASHBOARD]: [PERMISSIONS.VIEW],
+      [MODULES.STUDENTS]: [PERMISSIONS.VIEW], // Only assigned class students
+      [MODULES.ATTENDANCE]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT], // Only for assigned classes
+      [MODULES.ACADEMIC]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT],
+      [MODULES.CLASSES]: [PERMISSIONS.VIEW, PERMISSIONS.EDIT], // Only assigned classes
+      [MODULES.ELEARNING]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT],
+      [MODULES.EXAMS]: [PERMISSIONS.VIEW, PERMISSIONS.GRADE], // Enter marks only
+      [MODULES.COMMUNICATION]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE],
+      [MODULES.NOTICES]: [PERMISSIONS.VIEW],
+      [MODULES.REPORTS]: [PERMISSIONS.VIEW] // Academic reports only
+    }
+  },
+  student: {
+    description: 'Student access to personal academic information and resources',
+    modules: [MODULES.DASHBOARD, MODULES.ATTENDANCE, MODULES.ACADEMIC, MODULES.CLASSES, MODULES.ELEARNING, MODULES.EXAMS, MODULES.FEES, MODULES.LIBRARY, MODULES.TRANSPORT, MODULES.HOSTEL, MODULES.COMMUNICATION, MODULES.NOTICES],
+    permissions: {
+      [MODULES.DASHBOARD]: [PERMISSIONS.VIEW],
+      [MODULES.ATTENDANCE]: [PERMISSIONS.VIEW], // Own attendance only
+      [MODULES.ACADEMIC]: [PERMISSIONS.VIEW], // View lessons, homework
+      [MODULES.CLASSES]: [PERMISSIONS.VIEW], // Own classes only
+      [MODULES.ELEARNING]: [PERMISSIONS.VIEW], // View resources, submit assignments
+      [MODULES.EXAMS]: [PERMISSIONS.VIEW], // View results only
+      [MODULES.FEES]: [PERMISSIONS.VIEW], // View fee status
+      [MODULES.LIBRARY]: [PERMISSIONS.VIEW], // Search books, view borrowed
+      [MODULES.TRANSPORT]: [PERMISSIONS.VIEW], // View assigned route
+      [MODULES.HOSTEL]: [PERMISSIONS.VIEW], // View allocated room
+      [MODULES.COMMUNICATION]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE],
+      [MODULES.NOTICES]: [PERMISSIONS.VIEW]
+    }
+  },
+  parent: {
+    description: 'Parent access to child information and school communication',
+    modules: [MODULES.DASHBOARD, MODULES.STUDENTS, MODULES.ATTENDANCE, MODULES.EXAMS, MODULES.FEES, MODULES.TRANSPORT, MODULES.HOSTEL, MODULES.COMMUNICATION, MODULES.NOTICES, MODULES.PARENT_PORTAL],
+    permissions: {
+      [MODULES.DASHBOARD]: [PERMISSIONS.VIEW],
+      [MODULES.STUDENTS]: [PERMISSIONS.VIEW], // Child's profile only
+      [MODULES.ATTENDANCE]: [PERMISSIONS.VIEW], // Child's attendance only
+      [MODULES.EXAMS]: [PERMISSIONS.VIEW], // Child's results only
+      [MODULES.FEES]: [PERMISSIONS.VIEW], // View and pay fees
+      [MODULES.TRANSPORT]: [PERMISSIONS.VIEW], // Child's route info
+      [MODULES.HOSTEL]: [PERMISSIONS.VIEW], // Child's room info
+      [MODULES.COMMUNICATION]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE],
+      [MODULES.NOTICES]: [PERMISSIONS.VIEW],
+      [MODULES.PARENT_PORTAL]: [PERMISSIONS.VIEW, PERMISSIONS.EDIT] // Parent-specific features
+    }
+  },
+  staff: {
+    description: 'General staff with administrative support functions',
+    modules: [MODULES.DASHBOARD, MODULES.INVENTORY, MODULES.HOSTEL, MODULES.COMMUNICATION, MODULES.NOTICES],
+    permissions: {
+      [MODULES.DASHBOARD]: [PERMISSIONS.VIEW],
+      [MODULES.INVENTORY]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT],
+      [MODULES.HOSTEL]: [PERMISSIONS.VIEW, PERMISSIONS.EDIT, PERMISSIONS.MANAGE],
+      [MODULES.COMMUNICATION]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE],
+      [MODULES.NOTICES]: [PERMISSIONS.VIEW]
+    }
+  },
+  accountant: {
+    description: 'Financial management and payroll administration',
+    modules: [MODULES.DASHBOARD, MODULES.FEES, MODULES.HR_PAYROLL, MODULES.REPORTS, MODULES.COMMUNICATION, MODULES.NOTICES],
+    permissions: {
+      [MODULES.DASHBOARD]: [PERMISSIONS.VIEW],
+      [MODULES.FEES]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.APPROVE],
+      [MODULES.HR_PAYROLL]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.APPROVE],
+      [MODULES.REPORTS]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE], // Financial reports
+      [MODULES.COMMUNICATION]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE],
+      [MODULES.NOTICES]: [PERMISSIONS.VIEW]
+    }
+  },
+  librarian: {
+    description: 'Library management and book administration',
+    modules: [MODULES.DASHBOARD, MODULES.LIBRARY, MODULES.REPORTS, MODULES.COMMUNICATION, MODULES.NOTICES],
+    permissions: {
+      [MODULES.DASHBOARD]: [PERMISSIONS.VIEW],
+      [MODULES.LIBRARY]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE, PERMISSIONS.MANAGE],
+      [MODULES.REPORTS]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE], // Library reports
+      [MODULES.COMMUNICATION]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE],
+      [MODULES.NOTICES]: [PERMISSIONS.VIEW]
+    }
+  },
+  transport_manager: {
+    description: 'Transportation system management',
+    modules: [MODULES.DASHBOARD, MODULES.TRANSPORT, MODULES.REPORTS, MODULES.NOTICES],
+    permissions: {
+      [MODULES.DASHBOARD]: [PERMISSIONS.VIEW],
+      [MODULES.TRANSPORT]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE, PERMISSIONS.EDIT, PERMISSIONS.DELETE, PERMISSIONS.ASSIGN, PERMISSIONS.MANAGE],
+      [MODULES.REPORTS]: [PERMISSIONS.VIEW, PERMISSIONS.CREATE], // Transport reports
+      [MODULES.NOTICES]: [PERMISSIONS.VIEW]
+    }
+  }
+};
+
+// Utility functions for permission checking
+export const hasModuleAccess = (role: UserRole, module: string): boolean => {
+  return ROLE_PERMISSIONS[role]?.modules.includes(module) ?? false;
+};
+
+export const hasPermission = (role: UserRole, module: string, permission: string): boolean => {
+  const rolePermissions = ROLE_PERMISSIONS[role];
+  if (!rolePermissions) return false;
+  
+  const modulePermissions = rolePermissions.permissions[module];
+  return modulePermissions?.includes(permission) ?? false;
+};
+
+export const getModulesForRole = (role: UserRole): string[] => {
+  return ROLE_PERMISSIONS[role]?.modules ?? [];
+};
+
+export const getPermissionsForModule = (role: UserRole, module: string): string[] => {
+  return ROLE_PERMISSIONS[role]?.permissions[module] ?? [];
+};
+
+export const getRoleDescription = (role: UserRole): string => {
+  return ROLE_PERMISSIONS[role]?.description ?? '';
+};
